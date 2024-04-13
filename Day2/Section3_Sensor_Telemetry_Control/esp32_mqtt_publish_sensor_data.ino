@@ -2,8 +2,7 @@
   IoT Club - ISTC Workshop
   Controlling LED with MQTT
 
-  This code demonstrates how to control the state of an LED connected 
-  to the ESP32 based on messages received from a specific MQTT topic.
+  This code demonstrates how to publish data to a specific MQTT topic .
 */
 
 #include <WiFi.h>
