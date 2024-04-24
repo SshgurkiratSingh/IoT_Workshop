@@ -21,38 +21,13 @@ const int mqtt_port = 1883;
 const char* ledTopic = "esp32/led";
 
 const int ledPin = 2; // Change this to the actual pin connected to the LED
+const int pushButton =27; // Change this to the actual pin connected to the push button
+
+// Initialize the WiFi and MQTT clients
+bool ledStatus = LOW;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
-
-void setup() {
-  Serial.begin(115200);
-  pinMode(ledPin, OUTPUT);
-
-  WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("Connecting to WiFi..");
-  }
-  Serial.println("Connected to the WiFi network");
-
-  client.setServer(mqtt_server, mqtt_port);
-  client.setCallback(callback);
-
-  connectToMQTT();
-}
-
-/**
- * Function to continuously check the connection status, 
- * and reconnect to MQTT if not connected. 
- */
-void loop() {
-  if (!client.connected()) {
-    connectToMQTT();
-  }
-  client.loop();
-}
-
 /**
  * Function to establish connection to MQTT server.
  *
@@ -87,8 +62,44 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   // Control the LED based on the message
   if (message == "on") {
-    digitalWrite(ledPin, HIGH); 
+ledStatus = HIGH;
   } else if (message == "off") {
-    digitalWrite(ledPin, LOW);
+ ledStatus = LOW;
   } 
 }
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(ledPin, OUTPUT);
+  pinMode(pushButton, INPUT_PULLUP);
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.println("Connecting to WiFi..");
+  }
+  Serial.println("Connected to the WiFi network");
+
+  client.setServer(mqtt_server, mqtt_port);
+  client.setCallback(callback);
+
+  connectToMQTT();
+  
+}
+
+/**
+ * Function to continuously check the connection status, 
+ * and reconnect to MQTT if not connected. 
+ */
+void loop() {
+  if (!client.connected()) {
+    connectToMQTT();
+  }  
+  digitalWrite(ledPin, ledStatus);
+  client.loop();
+  if (digitalRead(pushButton) == LOW) {
+    ledStatus = !ledStatus;
+    client.publish(ledTopic, ledStatus ? "on" : "off");
+  }
+  delay(200);
+}
+
