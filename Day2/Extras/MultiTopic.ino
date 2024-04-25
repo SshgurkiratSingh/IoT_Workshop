@@ -20,6 +20,8 @@ const int mqtt_port = 1883;
 #define NumberOfTopics 4
 String topic[NumberOfTopics]={"esp32/led","esp32/led2","esp32/led/brightness","esp32/led2/brightness"};
 int values[NumberOfTopics]={0,0,0,0};
+
+
 #define FIRST_VALUE values[0]
 #define SECOND_VALUE values[1]
 #define THIRD_VALUE values[2]
