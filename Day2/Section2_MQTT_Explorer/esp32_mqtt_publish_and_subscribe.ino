@@ -10,11 +10,11 @@
 #include <PubSubClient.h>
 
 // Update these with your Wi-Fi credentials
-const char* ssid = "ConForNode1";
-const char* password = "12345678";
+const char* ssid = "Wokwi-GUEST";
+const char* password = "";
 
 // MQTT Broker settings
-const char* mqtt_server = "192.168.1.50";
+const char* mqtt_server = "ec2-3-83-31-167.compute-1.amazonaws.com";
 const int mqtt_port = 1883;
 
 // Topic for controlling the LED
